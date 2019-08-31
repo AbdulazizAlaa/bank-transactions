@@ -5,16 +5,16 @@ import java.util.concurrent.atomic.AtomicInteger
 class WalletDao {
     val wallets = HashMap<Int, Wallet>()
 
-    val currencies = hashMapOf(
-        "euro" to hashMapOf(
+    val currencies = hashMapOf<String, HashMap<String, Float>>(
+        "euro" to hashMapOf<String, Float>(
             "usd" to 1.10f,
             "sterling" to 0.90f
         ),
-        "usd" to hashMapOf(
+        "usd" to hashMapOf<String, Float>(
             "euro" to 0.91f,
             "sterling" to 0.82f
         ),
-        "sterling" to hashMapOf(
+        "sterling" to hashMapOf<String, Float>(
             "usd" to 1.22f,
             "euro" to 1.1f
         )
@@ -22,9 +22,10 @@ class WalletDao {
 
     var lastId: AtomicInteger = AtomicInteger(wallets.size - 1)
 
-    fun save(user_id: Int, currency: String) {
+    fun save(user_id: Int, currency: String): Int?{
         val id = lastId.incrementAndGet()
         wallets[id] = Wallet(id = id, user_id = user_id, balance = 0.0f, currency = currency)
+        return id
     }
 
     fun findById(id: Int): Wallet? {
@@ -33,6 +34,10 @@ class WalletDao {
 
     fun findByUserId(user_id: Int): Wallet? {
         return wallets.values.find { it.user_id == user_id }
+    }
+
+    fun findByUserIdAndCurrency(user_id: Int, currency: String): Wallet? {
+        return wallets.values.find { it.user_id == user_id && it.currency.equals(currency)}
     }
 
     fun addBalance(id: Int, balance: Float) {

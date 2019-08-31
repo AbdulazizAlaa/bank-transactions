@@ -7,9 +7,10 @@ class TransactionDao{
 
     var lastId: AtomicInteger = AtomicInteger(transactions.size - 1)
 
-    fun save(desc: String, amount: Float, wallet_id: Int) {
+    fun save(desc: String, amount: Float, wallet_id: Int): Int?{
         val id = lastId.incrementAndGet()
         transactions[id] = Transaction(id = id, desc = desc, amount = amount, wallet_id = wallet_id)
+        return id
     }
 
     fun findById(id: Int): Transaction? {

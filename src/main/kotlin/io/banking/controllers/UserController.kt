@@ -4,16 +4,22 @@ import io.banking.models.User
 import io.banking.models.UserDao
 import io.banking.models.WalletDao
 import io.banking.response.Response
+import io.banking.response.ResponseContainer
 import io.javalin.http.Context
 
 object UserController {
-    fun create(ctx: Context, userDao: UserDao, walletDao: WalletDao){
+    fun createAPI(ctx: Context, userDao: UserDao, walletDao: WalletDao){
         val user = ctx.body<User>()
+        val response = createUser(user, userDao, walletDao)
+
+        ctx.status(response.status)
+        if(response.resObj!=null) ctx.json(response.resObj)
+    }
+
+    fun createUser(user: User, userDao: UserDao, walletDao: WalletDao): ResponseContainer{
         // check if user exists
         if(userDao.findByEmail(user.email) != null){
-            ctx.status(500)
-            ctx.json(Response(500, "User already exists!!"))
-            return
+            return ResponseContainer(500, Response(500, "User already exists!!"))
         }
 
         // create user account
@@ -22,21 +28,20 @@ object UserController {
         // create Wallet and connected to the user with base currency Euro
         val walletId = walletDao.save(userId, "euro")
 
-        val response = object{
-            val status: Int = 200
-            val message: String = "Success"
-            val user_id: Int = userId
-        }
-        ctx.status(200)
-        ctx.json(response)
+        val response = hashMapOf<String, Any>(
+            "status" to 200,
+            "message" to "Success",
+            "user_id" to userId
+        )
+        return ResponseContainer(200, response)
     }
 
     fun getAll(ctx: Context, userDao: UserDao){
-        val response = object{
-            val status: Int = 200
-            val message: String = "Success"
-            val users: Array<User> = userDao.users.values.toTypedArray()
-        }
+        val response = hashMapOf(
+            "status" to 200,
+            "message" to "Success",
+            "users" to userDao.users.values.toTypedArray()
+        )
         ctx.status(200)
         ctx.json(response)
     }

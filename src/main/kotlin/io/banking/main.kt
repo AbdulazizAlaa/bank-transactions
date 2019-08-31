@@ -27,21 +27,24 @@ fun main() {
     app.routes {
         path("users"){
             get { ctx -> UserController.getAll(ctx, userDao) }
-            post { ctx -> UserController.create(ctx, userDao, walletDao) }
+            post { ctx -> UserController.createAPI(ctx, userDao, walletDao) }
         }
 
         path("wallets"){
-            get("/:wallet-id/balance") { ctx -> WalletController.getWalletBalance(ctx, walletDao) }
-            put("/:wallet-id/balance/:balance") { ctx -> WalletController.topUpWalletBalance(ctx, walletDao) }
+            get("/:wallet-id/balance") { ctx -> WalletController.getWalletBalanceAPI(ctx, walletDao) }
+            put("/:wallet-id/balance/:balance") { ctx -> WalletController.topUpWalletBalanceAPI(ctx, walletDao) }
             get { ctx -> WalletController.getAll(ctx, walletDao)}
+            post { ctx -> WalletController.createAPI(ctx, userDao, walletDao)}
         }
 
         path("transactions"){
             get { ctx -> TransactionController.getAll(ctx, transactionDao)}
         }
 
-        post("/transfer") { ctx -> TransactionController.transferMoney(ctx, userDao, walletDao, transactionDao)}
+        post("/transfer") { ctx -> TransactionController.transferMoneyAPI(ctx, userDao, walletDao, transactionDao)}
     }
 
 }
+
+
 
