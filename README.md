@@ -2,7 +2,14 @@
 
 ## How to run 
 
-- This will install all required dependencies and create a fat jar
-``` mvn clean && mvn install  ```
+- Clean build dir. 
 
-- Run the jar file "Server" ``` java -jar target/transactions-server-kotlin-1.0-SNAPSHOT-jar-with-dependencies.jar  ```
+`mvn clean`
+
+- Install dependencies and run test cases.
+
+` mvn install `
+
+- Run the jar file "Server" 
+ 
+ `java -jar transactions-server-kotlin-1.0-SNAPSHOT-jar-with-dependencies.jar `
